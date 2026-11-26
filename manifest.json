@@ -1,0 +1,24 @@
+{
+  "name": "Sahabat Belajar",
+  "short_name": "Sahabat",
+  "description": "Perancang belajar, tugasan, nota dan ulang kaji.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EEF1FB",
+  "theme_color": "#3B3FD8",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

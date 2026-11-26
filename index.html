@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ms"><head><meta charset="utf-8"><title>Sahabat Belajar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3B3FD8">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF1FB;--sf:#fff;--ink:#1D1F5C;--mut:#62658F;--ac:#FFB627;--ok:#1E9E86;--bad:#D9472B;--ln:#D9DDF2;--pri:#3B3FD8;--soft:#E4E7FA;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12132E;--sf:#1C1E45;--ink:#EEF0FF;--mut:#A3A7D6;--ln:#30336B;--pri:#8E91FF;--soft:#262955;--ok:#4FD1B8;--bad:#FF7A5C;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12132E;--sf:#1C1E45;--ink:#EEF0FF;--mut:#A3A7D6;--ln:#30336B;--pri:#8E91FF;--soft:#262955;--ok:#4FD1B8;--bad:#FF7A5C;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+main{max-width:620px;margin:0 auto;padding:16px}
+h1{font-size:26px;font-weight:800;margin:4px 0 2px;letter-spacing:-.02em}
+h2{font-size:18px;font-weight:800;margin:20px 0 8px}
+p{margin:0 0 8px;line-height:1.45}
+.mut{color:var(--mut);font-size:14px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:14px;margin-bottom:10px}
+.buddy{display:flex;gap:12px;align-items:flex-start;background:var(--pri);color:#fff;border:0;border-radius:22px;padding:16px}
+.buddy .face{font-size:34px;line-height:1;background:rgba(255,255,255,.18);border-radius:50%;width:52px;height:52px;display:grid;place-items:center;flex:none}
+.buddy p{margin:0 0 6px}
+.bar{height:8px;background:rgba(255,255,255,.25);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ac)}
+button,.btn{font:inherit;font-weight:600;border:0;border-radius:12px;padding:10px 14px;background:var(--pri);color:#fff;cursor:pointer}
+button.g{background:var(--soft);color:var(--ink)}
+button.ac{background:var(--ac);color:#1D1F5C}
+button.bd{background:var(--bad);color:#fff}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--ac);outline-offset:1px}
+input,select,textarea{font:inherit;width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--ln);background:var(--sf);color:var(--ink);margin-bottom:8px}
+textarea{min-height:140px;resize:vertical}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row>*{flex:1}
+.row>button{flex:none}
+.item{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.tag{font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;background:var(--soft);color:var(--ink);white-space:nowrap}
+.tag.bad{background:var(--bad);color:#fff}.tag.ac{background:var(--ac);color:#1D1F5C}.tag.ok{background:var(--ok);color:#fff}
+.bar2{border-left:6px solid var(--c,var(--pri))}
+.done .tt{text-decoration:line-through;opacity:.55}
+.chk{width:26px;height:26px;border-radius:50%;border:2px solid var(--pri);background:none;padding:0;flex:none;color:#fff}
+.done .chk{background:var(--ok);border-color:var(--ok)}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--sf);border-top:1px solid var(--ln);display:flex;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;background:none;color:var(--mut);padding:6px 0;font-size:11px;border-radius:10px}
+nav button b{display:block;font-size:20px;font-weight:400}
+nav button.on{color:var(--pri);background:var(--soft)}
+.fc{min-height:170px;display:grid;place-items:center;text-align:center;font-size:20px;font-weight:600;cursor:pointer;padding:20px}
+.big{font-size:64px;font-weight:800;text-align:center;letter-spacing:-.03em;margin:8px 0}
+img.tt{max-width:100%;border-radius:12px;display:block}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:14px;display:none;z-index:9}
+.panic{border:2px dashed var(--bad)}
+@media (prefers-reduced-motion:no-preference){.fc{transition:transform .15s}.fc:active{transform:scale(.98)}}
+</style></head><body>
+<main id="app"></main><nav id="nav"></nav><div id="toast"></div>
+<script>
+const DAYS=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'],ORDER=[1,2,3,4,5,6,0];
+const COLS=['#3B3FD8','#1E9E86','#E4572E','#C2185B','#8A5CF6','#D98E04'];
+const ALIAS={ahad:0,sun:0,sunday:0,isnin:1,mon:1,monday:1,selasa:2,tue:2,tuesday:2,rabu:3,wed:3,wednesday:3,khamis:4,thu:4,thursday:4,jumaat:5,fri:5,friday:5,sabtu:6,sat:6,saturday:6};
+let S={classes:[],tasks:[],notes:[],cards:[],img:null,xp:0,focus:{},streak:{last:'',n:0}};
+try{const r=localStorage.getItem('sb1');if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem('sb1',JSON.stringify(S))}catch(e){toast('Storan penuh. Padam gambar jadual lama.')}};
+const $=s=>document.querySelector(s),uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const dk=(d=new Date())=>d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2400)}
+let tab='today',panic=false,rev=null,openNote=null,showImg=false,tm={run:false,left:1500,mode:'fokus',h:null};
+const TABS=[['today','🏠','Hari Ini'],['tt','🗓️','Jadual'],['task','✅','Tugasan'],['note','📝','Nota'],['rev','🧠','Ulang'],['focus','⏱️','Fokus']];
+function go(t){tab=t;panic=false;render()}
+function lvl(){return Math.floor(Math.sqrt(S.xp/10))+1}
+function active(){const t=dk(),y=dk(new Date(Date.now()-864e5));if(S.streak.last===t)return;S.streak.n=S.streak.last===y?S.streak.n+1:1;S.streak.last=t}
+function fmtLeft(ms){const m=Math.round(ms/6e4),a=Math.abs(m);const s=a<60?a+' min':a<1440?Math.round(a/60)+' jam':Math.round(a/1440)+' hari';return m<0?'Lewat '+s:s+' lagi'}
+const pend=()=>S.tasks.filter(t=>!t.done).sort((a,b)=>new Date(a.due)-new Date(b.due));
+const dueCards=()=>S.cards.filter(c=>c.next<=Date.now());
+function render(){
+ $('#nav').innerHTML=TABS.map(t=>`<button class="${tab===t[0]?'on':''}" onclick="go('${t[0]}')"><b>${t[1]}</b>${t[2]}</button>`).join('');
+ $('#app').innerHTML=({today:vToday,tt:vTT,task:vTask,note:vNote,rev:vRev,focus:vFocus})[tab]();
+}
+function vToday(){
+ const h=new Date().getHours(),g=h<12?'Selamat pagi':h<18?'Selamat petang':'Selamat malam';
+ const p=pend(),late=p.filter(t=>new Date(t.due)<Date.now()),soon=p.filter(t=>{const d=new Date(t.due)-Date.now();return d>0&&d<864e5*2}),dc=dueCards().length;
+ let msg=late.length?`Ada ${late.length} tugasan lewat. Jangan risau, pilih yang paling kecil dan mula dulu.`:soon.length?`${soon.length} tugasan hampir tamat tempoh. Jom selesaikan satu hari ini.`:dc?`${dc} kad ulang kaji menunggu kamu. Lima minit pun dah cukup.`:'Hari ini tenang. Satu sesi fokus 25 minit pun dah kira kemenangan.';
+ const xp=S.xp,L=lvl(),lo=10*(L-1)**2,hi=10*L**2,pc=Math.min(100,Math.round((xp-lo)/(hi-lo)*100));
+ const td=new Date().getDay(),cls=S.classes.filter(c=>c.day===td).sort((a,b)=>a.s.localeCompare(b.s));
+ let pn='';if(panic){const t=p[0];pn=t?`<div class="card panic"><h2 style="margin-top:0">Mod Panik 🚨</h2><p><b>${esc(t.title)}</b> (${fmtLeft(new Date(t.due)-Date.now())})</p><p>1. Buka bahan dan baca 10 minit sahaja.<br>2. Tulis satu perenggan atau jawab satu soalan, kasar pun tak apa.<br>3. Mulakan sesi fokus 25 minit.</p><button class="ac" onclick="go('focus');startTimer()">Mula sekarang</button></div>`:`<div class="card panic"><p>Tiada tugasan tertunggak. Kamu selamat! 🎉</p></div>`}
+ return `<h1>${g}!</h1><p class="mut">${DAYS[td]}, ${new Date().toLocaleDateString('ms-MY',{day:'numeric',month:'long'})}</p><div class="buddy"><div class="face">🦉</div><div style="flex:1"><p>${msg}</p><p style="font-size:13px;opacity:.9">Tahap ${L} · 🔥 Streak ${S.streak.n} hari · ${xp} XP</p><div class="bar"><i style="width:${pc}%"></i></div></div></div><div class="row" style="margin-top:10px"><button class="bd" onclick="panic=!panic;render()">🚨 Mod Panik</button><button class="g" onclick="askNotif()">🔔 Hidupkan peringatan</button></div>${pn}<h2>Kelas hari ini</h2>${cls.length?cls.map(c=>`<div class="card bar2" style="--c:${c.c}"><div class="item"><b>${esc(c.n)}</b><span class="tag">${c.s}–${c.e}</span></div>${c.r?`<p class="mut" style="margin:4px 0 0">${esc(c.r)}</p>`:''}</div>`).join(''):'<p class="mut">Tiada kelas. Tambah di tab Jadual.</p>'}<h2>Tugasan akan datang</h2>${p.slice(0,3).map(taskCard).join('')||'<p class="mut">Tiada tugasan. Tambah di tab Tugasan.</p>'}<h2>Ulang kaji</h2><div class="card item"><span>${dc} kad perlu disemak</span><button onclick="go('rev')">Semak</button></div>`}
+function vTT(){return `<h1>Jadual</h1><p class="mut">Tambah kelas, atau tampal jadual dalam bentuk teks.</p><div class="card"><b>Tambah kelas</b><input id="cn" placeholder="Subjek, cth. Matematik"><div class="row"><select id="cd">${ORDER.map(d=>`<option value="${d}">${DAYS[d]}</option>`).join('')}</select><input id="cs" type="time" value="08:00" aria-label="Mula"><input id="ce" type="time" value="09:00" aria-label="Tamat"></div><input id="cr" placeholder="Bilik / pensyarah (pilihan)"><button onclick="addClass()">Simpan kelas</button></div><div class="card"><b>Tampal jadual</b><p class="mut">Satu baris satu kelas, cth: Isnin 08:00-10:00 Matematik</p><textarea id="pt" style="min-height:90px" placeholder="Isnin 08:00-10:00 Matematik&#10;Selasa 14:00-16:00 Fizik"></textarea><button class="g" onclick="importTT()">Import</button></div><div class="card"><b>Gambar jadual</b><p class="mut">Simpan gambar jadual rasmi sebagai rujukan. Saya tak boleh baca gambar di sini, jadi tambah kelas guna dua kaedah di atas.</p><input type="file" accept="image/*" onchange="upImg(this.files[0])">${S.img?`<button class="g" onclick="showImg=!showImg;render()">${showImg?'Sembunyi':'Lihat'} gambar</button> <button class="g" onclick="S.img=null;save();render()">Buang</button>${showImg?`<img class="tt" style="margin-top:8px" src="${S.img}" alt="Jadual">`:''}`:''}</div>${ORDER.map(d=>{const l=S.classes.filter(c=>c.day===d).sort((a,b)=>a.s.localeCompare(b.s));return l.length?`<h2>${DAYS[d]}</h2>`+l.map(c=>`<div class="card bar2" style="--c:${c.c}"><div class="item"><div><b>${esc(c.n)}</b><div class="mut">${c.s}–${c.e}${c.r?' · '+esc(c.r):''}</div></div><button class="g" onclick="delClass('${c.id}')" aria-label="Padam">✕</button></div></div>`).join(''):''}).join('')}`}
+function colFor(n){let h=0;for(const ch of n)h+=ch.charCodeAt(0);return COLS[h%COLS.length]}
+function addClass(){const n=$('#cn').value.trim();if(!n)return toast('Isi nama subjek');S.classes.push({id:uid(),n,day:+$('#cd').value,s:$('#cs').value,e:$('#ce').value,r:$('#cr').value.trim(),c:colFor(n)});save();render();toast('Kelas disimpan')}
+function delClass(id){S.classes=S.classes.filter(c=>c.id!==id);save();render()}
+function importTT(){let n=0;$('#pt').value.split('\n').forEach(l=>{const m=l.trim().match(/^([A-Za-z]+)\s+(\d{1,2})[:.](\d{2})\s*[-–to]+\s*(\d{1,2})[:.](\d{2})\s+(.+)$/i);if(!m)return;const d=ALIAS[m[1].toLowerCase()];if(d===undefined)return;const p=x=>String(x).padStart(2,'0');S.classes.push({id:uid(),n:m[6].trim(),day:d,s:p(m[2])+':'+m[3],e:p(m[4])+':'+m[5],r:'',c:colFor(m[6])});n++});save();render();toast(n?n+' kelas diimport':'Format tak dikenali')}
+function upImg(f){if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1100/im.width),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);S.img=c.toDataURL('image/jpeg',.7);save();render();toast('Gambar disimpan')};im.src=r.result};r.readAsDataURL(f)}
+function taskCard(t){const ms=new Date(t.due)-Date.now(),cl=t.done?'':ms<0?'bad':ms<864e5*2?'ac':'';return `<div class="card ${t.done?'done':''}"><div class="item"><button class="chk" onclick="toggleTask('${t.id}')" aria-label="Siap">${t.done?'✓':''}</button><div style="flex:1"><b class="tt">${esc(t.title)}</b><div class="mut">${esc(t.sub||'')}</div></div><span class="tag ${cl}">${t.done?'Siap':fmtLeft(ms)}</span></div></div>`}
+function vTask(){const d=S.tasks.filter(t=>t.done);return `<h1>Tugasan</h1><div class="card"><input id="tn" placeholder="Tajuk tugasan"><input id="ts" placeholder="Subjek (pilihan)"><input id="td" type="datetime-local" aria-label="Tarikh akhir"><button onclick="addTask()">Tambah tugasan</button></div>${pend().map(t=>taskCard(t)).join('')||'<p class="mut">Tiada tugasan. Bagus!</p>'}${d.length?`<h2>Siap</h2>${d.map(taskCard).join('')}<button class="g" onclick="S.tasks=S.tasks.filter(t=>!t.done);save();render()">Kosongkan yang siap</button>`:''}`}
+function addTask(){const t=$('#tn').value.trim(),d=$('#td').value;if(!t||!d)return toast('Isi tajuk dan tarikh');S.tasks.push({id:uid(),title:t,sub:$('#ts').value.trim(),due:d,done:false,n:0});save();render();toast('Tugasan ditambah')}
+function toggleTask(id){const t=S.tasks.find(x=>x.id===id);t.done=!t.done;if(t.done){S.xp+=15;active();toast('+15 XP! Syabas 🎉')}else S.xp=Math.max(0,S.xp-15);save();render()}
+function vNote(){if(openNote){const n=S.notes.find(x=>x.id===openNote)||{title:'',body:''};return `<h1>${n.id?'Edit nota':'Nota baharu'}</h1><input id="nt" placeholder="Tajuk" value="${esc(n.title)}"><textarea id="nb" placeholder="Tulis nota di sini.&#10;Tip: tulis Soalan :: Jawapan pada satu baris untuk jadikan kad ulang kaji.">${esc(n.body)}</textarea><div class="row"><button onclick="saveNote()">Simpan</button><button class="ac" onclick="mkCards()">Jana kad</button><button class="g" onclick="openNote=null;render()">Tutup</button>${n.id?`<button class="bd" onclick="delNote()">Padam</button>`:''}</div>`}const q=(window.nq||'').toLowerCase();return `<h1>Nota</h1><div class="row"><input id="nsr" placeholder="Cari nota" value="${esc(window.nq||'')}" oninput="window.nq=this.value;render();$('#nsr').focus()"><button onclick="openNote='new';render()">+ Baharu</button></div>${S.notes.filter(n=>(n.title+n.body).toLowerCase().includes(q)).map(n=>`<div class="card" onclick="openNote='${n.id}';render()" style="cursor:pointer"><b>${esc(n.title||'Tanpa tajuk')}</b><p class="mut" style="margin:4px 0 0">${esc(n.body.slice(0,90))}</p></div>`).join('')||'<p class="mut">Belum ada nota.</p>'}`}
+function saveNote(){const t=$('#nt').value.trim(),b=$('#nb').value;let n=S.notes.find(x=>x.id===openNote);if(!n){n={id:uid()};S.notes.unshift(n);openNote=n.id}n.title=t;n.body=b;save();render();toast('Nota disimpan')}
+function delNote(){S.notes=S.notes.filter(x=>x.id!==openNote);openNote=null;save();render()}
+function mkCards(){saveNote();const n=S.notes.find(x=>x.id===openNote);let c=0;n.body.split('\n').forEach(l=>{const i=l.indexOf('::');if(i>0){S.cards.push({id:uid(),q:l.slice(0,i).trim(),a:l.slice(i+2).trim(),box:0,next:0,from:n.title});c++}});save();toast(c?c+' kad dijana':'Tiada baris dengan ::')}
+const GAP=[0,1,3,7,14,30];
+function vRev(){const d=dueCards();if(!rev&&d.length)rev={id:d[0].id,show:false};const c=rev&&S.cards.find(x=>x.id===rev.id);let body=!S.cards.length?'<div class="card"><p>Belum ada kad. Di tab Nota, tulis Soalan :: Jawapan lalu tekan Jana kad.</p></div>':!c||!d.length?'<div class="card fc" style="cursor:default">Semua kad siap disemak hari ini 🎉</div>':`<div class="card fc" onclick="rev.show=true;render()">${rev.show?esc(c.a):esc(c.q)}</div>${rev.show?`<div class="row"><button class="bd" onclick="grade(false)">Belum tahu</button><button class="ok" style="background:var(--ok)" onclick="grade(true)">Tahu</button></div>`:'<p class="mut" style="text-align:center">Tekan kad untuk lihat jawapan</p>'}`;return `<h1>Ulang kaji</h1><p class="mut">${d.length} kad perlu disemak · ${S.cards.length} semua. Kad yang kamu tahu akan muncul semula selepas selang yang makin panjang.</p>${body}${S.cards.length?`<button class="g" style="margin-top:10px" onclick="if(confirm('Padam semua kad?')){S.cards=[];rev=null;save();render()}">Padam semua kad</button>`:''}`}
+function grade(ok){const c=S.cards.find(x=>x.id===rev.id);c.box=ok?Math.min(5,c.box+1):0;c.next=Date.now()+(ok?GAP[c.box]*864e5:6e4*5);if(ok){S.xp+=2;active()}save();rev=null;render()}
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+function vFocus(){const m=S.focus[dk()]||0,wk=Object.values(S.focus).reduce((a,b)=>a+b,0);return `<h1>Fokus</h1><div class="card"><p class="mut" style="text-align:center">${tm.mode==='fokus'?'Masa fokus':'Masa rehat'}</p><div class="big" id="tm">${fmt(tm.left)}</div><div class="row" style="justify-content:center"><button onclick="${tm.run?'pauseTimer()':'startTimer()'}">${tm.run?'Jeda':'Mula'}</button><button class="g" onclick="resetTimer()">Set semula</button></div></div><div class="card"><b>${m} minit</b> fokus hari ini<br><span class="mut">Jumlah keseluruhan ${wk} minit · Streak ${S.streak.n} hari</span></div><p class="mut">Setiap minit fokus beri 1 XP. Rehat 5 minit selepas setiap sesi.</p>`}
+function startTimer(){if(tm.run)return;tm.run=true;tm.h=setInterval(()=>{tm.left--;const e=$('#tm');if(e)e.textContent=fmt(tm.left);if(tm.left<=0){done()}},1000);if(tab==='focus')render()}
+function pauseTimer(){clearInterval(tm.h);tm.run=false;render()}
+function resetTimer(){clearInterval(tm.h);tm.run=false;tm.mode='fokus';tm.left=1500;render()}
+function done(){clearInterval(tm.h);tm.run=false;if(tm.mode==='fokus'){S.focus[dk()]=(S.focus[dk()]||0)+25;S.xp+=25;active();tm.mode='rehat';tm.left=300;notify('Sesi fokus siap! Rehat 5 minit.')}else{tm.mode='fokus';tm.left=1500;notify('Rehat tamat. Jom fokus lagi.')}save();toast('Sesi tamat 🎉');render()}
+function askNotif(){if(!('Notification' in window))return toast('Pelayar tak sokong notifikasi');Notification.requestPermission().then(p=>toast(p==='granted'?'Peringatan dihidupkan (semasa app dibuka)':'Kebenaran ditolak'))}
+function notify(m){try{if('Notification' in window&&Notification.permission==='granted')new Notification('Sahabat Belajar',{body:m})}catch(e){}}
+setInterval(()=>{let ch=false;pend().forEach(t=>{const d=new Date(t.due)-Date.now();if(d>0&&d<36e5&&t.n<1){t.n=1;ch=true;notify(t.title+' tamat dalam sejam');toast('⏰ '+t.title+' tamat dalam sejam')}});if(ch)save()},30000);
+render();
+</script>
+<script>if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
+</body></html>
